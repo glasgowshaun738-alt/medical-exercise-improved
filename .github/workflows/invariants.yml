@@ -1,0 +1,22 @@
+# Checks the two invariants that cannot be left to code review: the dependency
+# direction that the safety classification argument rests on, and the agreement
+# between each module's declared SAFETY_CLASS and the manifest in DESIGN.md.
+#
+# Deliberately not a test suite. It asserts structural properties, not
+# behaviour.
+
+name: invariants
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python tools/check_invariants.py

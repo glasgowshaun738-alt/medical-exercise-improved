@@ -12,7 +12,7 @@ SAFETY_CLASS_RATIONALE:
     hazard analysis, and no hazard analysis exists for this software yet.
     Recording a class without one would be inventing a requirement, so the
     class is declared, the reasoning is recorded, and both are marked as
-    pending review. See SAFETY_CLASSIFICATION.md.
+    pending review. See DESIGN.md.
 
 Why this module exists at all:
 
@@ -43,6 +43,9 @@ import math
 from dataclasses import dataclass, field, replace
 from enum import Enum
 from typing import Any, Mapping
+
+SAFETY_CLASS = "C"
+SAFETY_CLASS_PROVISIONAL = True
 
 
 # --------------------------------------------------------------------------
@@ -109,7 +112,7 @@ KNOWN_FRAMES = (FRAME_HFI_PIXELS, FRAME_LFI_PIXELS)
 # components happen to commute. The generator's own case labels agree: the
 # cases it marks "good" carry no shift (isotropic scale does commute with
 # rotation), and the case it marks "bad" is the one that adds shift. The defect
-# is documented rather than fixed -- see MERGE_REQUEST.md for why no behaviour
+# is documented rather than fixed -- see DESIGN.md for why no behaviour
 # change lands before an equivalence baseline exists.
 # --------------------------------------------------------------------------
 
@@ -312,7 +315,7 @@ def decode_png_b64(value: Any, field_path: str) -> bytes:
     payload is held in memory twice. The alternative -- multipart, or a shared
     store addressed by reference -- moves the problem to access control on that
     store, which is a larger decision than this patch. Recorded in
-    MERGE_REQUEST.md rather than decided here.
+    DESIGN.md rather than decided here.
 
     Decoding is split from image parsing so that a malformed transport
     encoding and a malformed image are different error codes. The orchestrator
@@ -550,7 +553,7 @@ class AcquisitionParams:
 # image for a timestamp comparison to discriminate against. What the split into
 # two processes does create is the possibility of handing spatial
 # transformation a transform computed for a different case, and that is what
-# `case_id` refuses. See MERGE_REQUEST.md.
+# `case_id` refuses. See DESIGN.md.
 # --------------------------------------------------------------------------
 
 

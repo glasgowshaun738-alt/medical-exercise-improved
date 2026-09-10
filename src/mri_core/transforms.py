@@ -5,7 +5,7 @@ SAFETY_CLASS_RATIONALE:
     These operations determine where the transformed anatomy and the biopsy
     landmark end up. Their output feeds the target the needle is driven to, so
     an error here is not recoverable downstream. Provisional pending hazard
-    analysis; see SAFETY_CLASSIFICATION.md.
+    analysis; see DESIGN.md.
 
 PROVENANCE:
     Every function body in this module is copied verbatim from
@@ -18,7 +18,7 @@ PROVENANCE:
     baseline for this software yet -- no reference outputs, no verification
     suite -- so any behaviour change made now could not be distinguished from
     a regression. The defects found while reading this code are recorded in
-    MERGE_REQUEST.md and left in place.
+    DESIGN.md and left in place.
 
     The one documented defect that lives here is `_rotate`'s sign convention:
     it is only correct in combination with the specific call order used by

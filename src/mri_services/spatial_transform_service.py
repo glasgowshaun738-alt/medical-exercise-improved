@@ -6,7 +6,7 @@ SAFETY_CLASS_RATIONALE:
     geometry of its own, so a defect here is a refused or failed request rather
     than a wrong image. The computation it calls is class C, in
     `mri_core.spatial` -- its output is what the operator marks a biopsy site
-    on. Provisional pending hazard analysis; see SAFETY_CLASSIFICATION.md.
+    on. Provisional pending hazard analysis; see DESIGN.md.
 
 PROCESS SEPARATION:
     Independent long-running service on its own port, started by the platform's

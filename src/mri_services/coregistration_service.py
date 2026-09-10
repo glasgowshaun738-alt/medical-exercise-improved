@@ -6,14 +6,14 @@ SAFETY_CLASS_RATIONALE:
     geometry of its own, so a defect here is a refused or failed request rather
     than a wrong transform. The computation it calls is class C, in
     `mri_core.coregistration`. Provisional pending hazard analysis; see
-    SAFETY_CLASSIFICATION.md.
+    DESIGN.md.
 
 PROCESS SEPARATION:
     Runs as an independent long-running service, started by the platform's
     service manager or by hand, and never as a child of the orchestration code.
     The orchestrator is a client over loopback. That satisfies the separation
     requirement without Docker and without a parent-child relationship -- see
-    MERGE_REQUEST.md for why those two were ruled out.
+    DESIGN.md for why those two were ruled out.
 
 STATE:
     None. Nothing is retained between requests: no cached image, no previous

@@ -12,7 +12,7 @@ SAFETY_CLASS_RATIONALE:
     result, not a refusal. That risk is why `decode_image` accepts one image
     mode and one format rather than whatever Pillow will take.
 
-    Provisional pending hazard analysis; see SAFETY_CLASSIFICATION.md.
+    Provisional pending hazard analysis; see DESIGN.md.
 
 Everything impure lives here -- sockets, JSON, base64, logging, process
 lifecycle -- so that `mri_core` stays a set of pure functions over explicit

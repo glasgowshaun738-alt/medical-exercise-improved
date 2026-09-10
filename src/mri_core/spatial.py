@@ -6,7 +6,7 @@ SAFETY_CLASS_RATIONALE:
     transformed image and the transformed landmark are what the needle is aimed
     by, so an error here lands at the needle tip with nothing downstream to
     catch it. Provisional pending hazard analysis; see
-    SAFETY_CLASSIFICATION.md.
+    DESIGN.md.
 
 PROVENANCE:
     The six transform calls below, their order, and their arguments are copied
@@ -41,7 +41,7 @@ DOCUMENTED DEFECT, NOT FIXED:
     case it marks "bad" is the one that adds shift. Patients 2 and 3 carry no
     shift; patient 4 carries shift together with scale and rotation.
 
-    It is left in place and recorded in MERGE_REQUEST.md. Correcting it is a
+    It is left in place and recorded in DESIGN.md. Correcting it is a
     change to clinical behaviour and belongs behind a verification suite with a
     ground-truth oracle, not inside the merge request that introduces the
     service wrappers.

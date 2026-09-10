@@ -5,7 +5,7 @@ SAFETY_CLASS_RATIONALE:
     The transform produced here is what the spatial transformation is driven
     by, and therefore what determines whether the transformed anatomy matches
     the patient on the scanner. Provisional pending hazard analysis; see
-    SAFETY_CLASSIFICATION.md.
+    DESIGN.md.
 
 PROVENANCE:
     The arithmetic is copied verbatim from `helper_functions.coregister`. Only
