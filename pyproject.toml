@@ -6,7 +6,27 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "pillow>=12.3.0",
+    "flask>=3.1.0",
 ]
+
+# Console entry points, one per service. The services are started by the
+# platform's service manager (or by hand, for this MVP) and never by the
+# orchestrator, so each needs its own independent launch path.
+[project.scripts]
+coregistration-service = "mri_services.coregistration_service:main"
+spatial-transform-service = "mri_services.spatial_transform_service:main"
+
+# Three packages in one distribution. The import direction is what carries the
+# IEC 62304 segregation argument: mri_core depends on neither of the others, so
+# the higher-class compute code cannot reach transport or HTTP concerns.
+# Splitting these into three separately versioned distributions is the stated
+# target; see MERGE_REQUEST.md for why that is deferred rather than done here.
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mri_core", "src/mri_contract", "src/mri_services"]
 
 [tool.uv]
 dev-dependencies = [
