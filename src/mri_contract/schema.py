@@ -40,7 +40,7 @@ from __future__ import annotations
 import base64
 import binascii
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from typing import Any, Mapping
 
@@ -283,6 +283,19 @@ def _require_pair(value: Any, field_path: str) -> tuple[float, float]:
     )
 
 
+def _optional_str(value: Any, field_path: str) -> str | None:
+    """A string, or absent. Empty and whitespace-only are rejected rather than
+    normalised to None, because they indicate a caller that meant to send
+    something."""
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value.strip():
+        raise ContractViolation(
+            ErrorCode.SCHEMA_INVALID, field_path, "expected a non-empty string or null"
+        )
+    return value
+
+
 def _require_enum(value: Any, allowed: tuple[str, ...], code: ErrorCode, field_path: str) -> str:
     if value not in allowed:
         raise ContractViolation(
@@ -344,6 +357,24 @@ class Transform:
     source_frame: str = FRAME_HFI_PIXELS
     target_frame: str = FRAME_LFI_PIXELS
 
+    # Set by the coregistration service to the case the transform was computed
+    # for, and required by the spatial transformation service to equal the
+    # case on the request it arrives with.
+    #
+    # This is the whole reason the field exists. Splitting one function into
+    # two processes is what creates the possibility of handing spatial
+    # transformation a transform computed for a different patient, and a
+    # stateless service holds nothing it could compare a bare case identifier
+    # against. Carrying the case inside the transform gives it something.
+    #
+    # What it detects: an orchestrator that pairs the wrong transform with an
+    # image. What it does not detect: a transform that was altered in transit.
+    # Detecting that needs a signed binding and a key, which is a decision
+    # about the trust boundary between these processes that has not been made.
+    # Stated rather than quietly implied, because a check that appears to
+    # authenticate and does not is worse than no check.
+    issued_for_case_id: str | None = None
+
     _FIELDS = (
         "scale",
         "rotation_deg",
@@ -353,6 +384,7 @@ class Transform:
         "model",
         "source_frame",
         "target_frame",
+        "issued_for_case_id",
     )
 
     @classmethod
@@ -418,6 +450,9 @@ class Transform:
                 ErrorCode.FRAME_UNKNOWN,
                 f"{field_path}.target_frame",
             ),
+            issued_for_case_id=_optional_str(
+                body.get("issued_for_case_id"), f"{field_path}.issued_for_case_id"
+            ),
         )
 
     def as_payload(self) -> dict[str, Any]:
@@ -430,7 +465,12 @@ class Transform:
             "model": self.model,
             "source_frame": self.source_frame,
             "target_frame": self.target_frame,
+            "issued_for_case_id": self.issued_for_case_id,
         }
+
+    def issued_for(self, case_id: str) -> "Transform":
+        """Return a copy stamped with the case it was computed for."""
+        return replace(self, issued_for_case_id=case_id)
 
 
 # --------------------------------------------------------------------------
