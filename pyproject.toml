@@ -16,9 +16,16 @@ dependencies = [
 coregistration-service = "mri_services.coregistration_service:main"
 spatial-transform-service = "mri_services.spatial_transform_service:main"
 
-# Three packages in one distribution. The import direction is what carries the
-# IEC 62304 segregation argument: mri_core depends on neither of the others, so
-# the higher-class compute code cannot reach transport or HTTP concerns.
+# Three packages in one distribution. The declared import direction is what
+# carries the IEC 62304 segregation argument:
+#
+#     mri_services  ->  mri_core  ->  mri_contract
+#
+# and never the reverse. mri_contract is standard library only; mri_core adds
+# Pillow and nothing else. The consequence that matters is that the compute
+# code cannot reach Flask, HTTP, or any transport concern, so a transport
+# defect cannot alter a computed result.
+#
 # Splitting these into three separately versioned distributions is the stated
 # target; see MERGE_REQUEST.md for why that is deferred rather than done here.
 [build-system]
