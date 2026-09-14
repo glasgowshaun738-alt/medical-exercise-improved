@@ -186,6 +186,7 @@ class ErrorCode(str, Enum):
     SCALE_ZERO = "SCALE_ZERO"
     FRAME_UNKNOWN = "FRAME_UNKNOWN"
     LANDMARK_OUT_OF_BOUNDS = "LANDMARK_OUT_OF_BOUNDS"
+    TRANSFORMED_LANDMARK_OUT_OF_BOUNDS = "TRANSFORMED_LANDMARK_OUT_OF_BOUNDS"
     CASE_ID_MISMATCH = "CASE_ID_MISMATCH"
     INTERNAL_ERROR = "INTERNAL_ERROR"
 
@@ -299,7 +300,9 @@ def _optional_str(value: Any, field_path: str) -> str | None:
     return value
 
 
-def _require_enum(value: Any, allowed: tuple[str, ...], code: ErrorCode, field_path: str) -> str:
+def _require_enum(
+    value: Any, allowed: tuple[str, ...], code: ErrorCode, field_path: str
+) -> str:
     if value not in allowed:
         raise ContractViolation(
             code, field_path, f"expected one of {list(allowed)}, got {value!r}"

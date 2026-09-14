@@ -205,7 +205,12 @@ def encode_image(img: Image.Image) -> str:
 
 
 def require_landmark_in_bounds(
-    landmark: tuple[float, float] | None, img: Image.Image, field_path: str
+    landmark: tuple[float, float] | None,
+    img: Image.Image,
+    field_path: str,
+    *,
+    error_code: ErrorCode = ErrorCode.LANDMARK_OUT_OF_BOUNDS,
+    description: str = "landmark",
 ) -> None:
     """A landmark is a pixel index into a specific image.
 
@@ -220,9 +225,9 @@ def require_landmark_in_bounds(
     x, y = landmark
     if not (0 <= x <= img.width - 1 and 0 <= y <= img.height - 1):
         raise ContractViolation(
-            ErrorCode.LANDMARK_OUT_OF_BOUNDS,
+            error_code,
             field_path,
-            f"({x}, {y}) outside image bounds {img.width}x{img.height}",
+            (f"{description} ({x}, {y}) outside image bounds {img.width}x{img.height}"),
         )
 
 

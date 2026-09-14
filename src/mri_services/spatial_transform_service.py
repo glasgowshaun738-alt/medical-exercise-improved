@@ -25,7 +25,11 @@ from __future__ import annotations
 
 from flask import Flask
 
-from mri_contract.schema import SpatialTransformRequest, spatial_transform_response
+from mri_contract.schema import (
+    ErrorCode,
+    SpatialTransformRequest,
+    spatial_transform_response,
+)
 from mri_core.spatial import spatial_transform
 
 from .runtime import (
@@ -83,6 +87,20 @@ def build_app() -> Flask:
         # 5. Compute. One Transform object drives both the image and the
         #    landmark, so the two cannot diverge.
         out_img, out_landmark = spatial_transform(img, req.transform, req.landmark)
+
+        # 6. Output safety invariant: if a landmark was supplied, the transformed
+        #    landmark must still refer to a pixel in the transformed image.
+        #
+        #    A structurally valid transform can move a valid input landmark outside
+        #    the image. Returning that coordinate as a successful biopsy target would
+        #    violate the fail-closed contract.
+        require_landmark_in_bounds(
+            out_landmark,
+            out_img,
+            "landmark",
+            error_code=ErrorCode.TRANSFORMED_LANDMARK_OUT_OF_BOUNDS,
+            description="transformed landmark",
+        )
 
         log_event(
             logger,
